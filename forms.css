@@ -1,0 +1,252 @@
+/* RESET E TIPOGRAFIA */
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;  
+    box-sizing: border-box;
+}
+
+body{
+    background-image: linear-gradient(to right, #599BF0, #33598A);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+header{
+    display: flex;
+    background-color:#feffff;
+    width: 100%;
+    height: 7vh;
+    padding: 10px 0;
+    justify-content: center; 
+    align-items: center;
+}
+
+/* ---------------------------------------------------------------- */
+/* ESTRUTURA DO QUIZ E PROGRESSO */
+/* ---------------------------------------------------------------- */
+
+#quiz-container {
+    max-width: 650px; 
+    margin: 50px auto; 
+    padding: 30px;
+    background-color: #feffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.step {
+    display: none; 
+    animation: fadeIn 0.5s ease-out; /* Adiciona uma animação suave na troca de etapa */
+}
+
+.step.active {
+    display: block; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step h2 {
+    color: #33598A;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+.step p {
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Indicador de Progresso */
+#progress-indicator {
+    margin-bottom: 30px;
+}
+
+.progress-text {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.progress-bar-container {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #599BF0;
+    transition: width 0.4s ease-in-out;
+}
+
+/* ---------------------------------------------------------------- */
+/* ESTILOS DE CAMPO GERAIS */
+/* ---------------------------------------------------------------- */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #33598A;
+    font-size: 1rem;
+}
+
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Estilo para os campos de Pressão Arterial */
+.input-pair {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.input-pair input {
+    flex: 1;
+}
+
+/* Estilos para o grupo de Rádio Buttons (Sexo) */
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* ---------------------------------------------------------------- */
+/* ESTILO DO SLIDER (Nível de Estresse) */
+/* ---------------------------------------------------------------- */
+
+#stress-level {
+    width: 100%;
+    margin: 15px 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* ESTILOS PARA OS TOGGLE SWITCHES (Sim/Não) */
+/* ---------------------------------------------------------------- */
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.toggle-group label {
+    margin-bottom: 0; 
+}
+
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-left: auto; /* Alinha o switch à direita */
+}
+
+.switch-container input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-switch:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-switch {
+    background-color: #599BF0;
+}
+
+input:checked + .toggle-switch:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    margin-left: 10px;
+    font-size: 0.9rem;
+    color: #555;
+    width: 50px; /* Para manter o Sim/Não alinhado */
+    text-align: right;
+}
+
+/* ---------------------------------------------------------------- */
+/* BOTÕES DE NAVEGAÇÃO */
+/* ---------------------------------------------------------------- */
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Mantém "Voltar" à esquerda e "Prosseguir" à direita */
+    margin-top: 30px;
+}
+
+.button-container button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #feffff;
+    background-color: #599BF0;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-container button:nth-child(1) { /* Estilo para o botão 'Voltar' */
+    background-color: #ccc;
+    color: #333;
+}
+
+.button-container button:nth-child(1):hover {
+    background-color: #bbb;
+}
+
+.button-container button:hover {
+    background-color: #33598A;
+}
+
+.final-submit { /* Estilo especial para o botão de envio final */
+    background-color: #28a745 !important;
+}
+
+.final-submit:hover {
+    background-color: #1e7e34 !important;
+}

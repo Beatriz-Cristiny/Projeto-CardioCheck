@@ -1,0 +1,9 @@
+{
+  "liveServer.settings.ignoreFiles": [
+    "**/scripts/homepage.js",
+    "**/integration/produto.js",
+    "**/backend/**",
+    "*.json",
+    "*.db"
+  ]
+}

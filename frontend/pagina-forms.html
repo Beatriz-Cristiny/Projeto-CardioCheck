@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardio Check - Avaliação de Risco</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <img src="./LogoCardioCheck.svg" alt="Logo Cardio Check" />
+    </header>
+
+    <div id="quiz-container">
+      <div id="progress-indicator">
+        <span class="progress-text"></span>
+        <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- FORM PRINCIPAL -->
+      <form id="multi-step-form">
+        
+        <!-- STEP 1 -->
+        <section class="step active" id="step-1" data-step="1">
+          <h2>1. Seu Perfil e Histórico</h2>
+          <p>
+            Preencha os dados abaixo para começarmos sua avaliação. Suas
+            informações são confidenciais.
+          </p>
+
+          <div class="form-group">
+            <label for="age">Idade:</label>
+            <input type="number" id="age" name="Age" min="18" required />
+          </div>
+
+          <div class="form-group">
+            <label>Sexo:</label>
+            <div class="radio-group">
+              <input
+                type="radio"
+                id="sex-m"
+                name="Sex"
+                value="Masculino"
+                required
+              />
+              <label for="sex-m">Masculino</label>
+
+              <input type="radio" id="sex-f" name="Sex" value="Feminino" />
+              <label for="sex-f">Feminino</label>
+            </div>
+          </div>
+
+          <div class="form-group toggle-group">
+            <label for="family-history"
+              >Histórico Familiar de Problemas Cardíacos?</label
+            >
+            <div class="switch-container">
+              <input
+                type="checkbox"
+                id="family-history"
+                name="Family History"
+                value="1"
+              />
+              <label for="family-history" class="toggle-switch"></label>
+            </div>
+            <span class="switch-label">Não / Sim</span>
+          </div>
+
+          <div class="form-group toggle-group">
+            <label for="prev-problems"
+              >Já teve Problemas Cardíacos Prévios?</label
+            >
+            <div class="switch-container">
+              <input
+                type="checkbox"
+                id="prev-problems"
+                name="Previous Heart Problems"
+                value="1"
+              />
+              <label for="prev-problems" class="toggle-switch"></label>
+            </div>
+            <span class="switch-label">Não / Sim</span>
+          </div>
+
+          <div class="form-group toggle-group">
+            <label for="medication-use"
+              >Uso de Medicação Contínua?</label
+            >
+            <div class="switch-container">
+              <input
+                type="checkbox"
+                id="medication-use"
+                name="Medication Use"
+                value="1"
+              />
+              <label for="medication-use" class="toggle-switch"></label>
+            </div>
+            <span class="switch-label">Não / Sim</span>
+          </div>
+
+          <div class="button-container">
+            <button type="button" onclick="handleStepSubmission(1)">
+              Prosseguir
+            </button>
+          </div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="step" id="step-2" data-step="2" style="display: none">
+          <h2>2. Suas Medidas de Saúde</h2>
+          <p>
+            Insira seus resultados de exames e medições recentes para uma
+            análise precisa.
+          </p>
+
+          <div class="form-group">
+            <label for="blood-pressure-sys"
+              >Pressão Arterial (Sistólica/Diastólica):</label
+            >
+            <div class="input-pair">
+              <input
+                type="number"
+                id="blood-pressure-sys"
+                name="Systolic"
+                placeholder="Sistólica"
+                min="70"
+                max="200"
+                required
+              />
+              /
+              <input
+                type="number"
+                id="blood-pressure-dia"
+                name="Diastolic"
+                placeholder="Diastólica"
+                min="40"
+                max="120"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bmi">Seu IMC:</label>
+            <input
+              type="number"
+              step="0.1"
+              id="bmi"
+              name="BMI"
+              min="15"
+              max="50"
+              required
+            />
+          </div>
+
+          <div class="form-group toggle-group">
+            <label for="diabetes">Diagnóstico de Diabetes?</label>
+            <div class="switch-container">
+              <input type="checkbox" id="diabetes" name="Diabetes" value="1" />
+              <label for="diabetes" class="toggle-switch"></label>
+            </div>
+            <span class="switch-label">Não / Sim</span>
+          </div>
+
+          <div class="button-container">
+            <button type="button" onclick="handleStepSubmission(2, false)">
+              Voltar
+            </button>
+            <button type="button" onclick="handleStepSubmission(2)">
+              Prosseguir
+            </button>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step" id="step-3" data-step="3" style="display: none">
+          <h2>3. Seu Estilo de Vida</h2>
+          <p>
+            Como é a sua rotina? Seus hábitos diários são cruciais para a
+            análise.
+          </p>
+
+          <div class="form-group">
+            <label for="smoking">Hábito de Fumar:</label>
+            <select id="smoking" name="Smoking" required>
+              <option value="">Selecione...</option>
+              <option value="0">Não Fuma</option>
+              <option value="1">Fuma</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="alcohol">Consumo de Álcool:</label>
+            <select id="alcohol" name="Alcohol Consumption" required>
+              <option value="">Selecione...</option>
+              <option value="0">Nunca</option>
+              <option value="1">Ocasionalmente (1-2x/mês)</option>
+              <option value="2">Semanalmente</option>
+              <option value="3">Diariamente</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sleep-hours">Horas de Sono por Dia:</label>
+            <input
+              type="number"
+              id="sleep-hours"
+              name="Sleep Hours Per Day"
+              min="3"
+              max="12"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="stress-level">Nível de Estresse (1 a 10):</label>
+            <input
+              type="range"
+              id="stress-level"
+              name="Stress Level"
+              min="1"
+              max="10"
+              step="1"
+              oninput="stressValue.innerText = this.value"
+            />
+            <p>Nível atual: <span id="stressValue">5</span></p>
+          </div>
+
+          <div class="button-container">
+            <button type="button" onclick="handleStepSubmission(3, false)">
+              Voltar
+            </button>
+            <button type="button" onclick="handleStepSubmission(3)">
+              Prosseguir
+            </button>
+          </div>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="step" id="step-4" data-step="4" style="display: none">
+          <h2>4. Sua Atividade Física</h2>
+          <p>
+            Seja o mais preciso possível para que o sistema entenda seu volume
+            de exercícios.
+          </p>
+
+          <div class="form-group">
+            <label for="activity-days"
+              >Dias de Atividade Física por semana:</label
+            >
+            <input
+              type="number"
+              id="activity-days"
+              name="Physical Activity Days Per Week"
+              min="0"
+              max="7"
+              required
+            />
+          </div>
+        </section>
+
+        <!-- BOTÕES FINAIS -->
+        <div class="button-container">
+          <button type="button" onclick="handleStepSubmission(4, false)">
+            Voltar
+          </button>
+          <button
+            type="button"
+            class="final-submit"
+            onclick="handleFinalSubmission()"
+          >
+            Obter Meu Resultado
+          </button>
+        </div>
+      </form>
+
+      <!-- RESULTADO -->
+      <section id="results" style="display: none">
+        <h2>Seu Resultado de Risco Cardiovascular</h2>
+        <div id="result-text"></div>
+        <button onclick="window.location.reload()">Refazer Avaliação</button>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

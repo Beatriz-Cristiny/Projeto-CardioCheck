@@ -12,9 +12,9 @@ FEATURE_ORDER_7 = [
     "Medical_Risk", 
     "Lifestyle_Risk",
     "Sex_Male",
-    "Heart Rate",
-    "BMI",
-    "Diastolic"
+    "BMI",           
+    "Diastolic",
+    "Systolic"       
 ]
 
 # Carregar modelo
@@ -48,12 +48,16 @@ class ModeloCorrigido:
     def predict(self, X):
         pred = self.modelo_original.predict(X)[0]
         # 🔥 APENAS CORRIGINDO A INVERSÃO: 1→0, 0→1
-        return [1 - pred]
+        corrected_pred = 1 - pred
+        print(f"🔧 Correção de inversão: {pred} → {corrected_pred}")
+        return [corrected_pred]
     
     def predict_proba(self, X):
         proba = self.modelo_original.predict_proba(X)[0]
         # 🔥 APENAS CORRIGINDO A INVERSÃO das probabilidades
-        return np.array([[proba[1], proba[0]]])
+        corrected_proba = np.array([[proba[1], proba[0]]])
+        print(f"🔧 Correção de probabilidades: [{proba[0]:.3f}, {proba[1]:.3f}] → [{corrected_proba[0][0]:.3f}, {corrected_proba[0][1]:.3f}]")
+        return corrected_proba
 
 # Instanciar modelo corrigido
 modelo = ModeloCorrigido(modelo_original)
@@ -129,9 +133,9 @@ def teste_risco_alto():
         "Medical_Risk": 0.95,
         "Lifestyle_Risk": 0.85,
         "Sex_Male": 1,
-        "Heart Rate": 0.9,
         "BMI": 0.92,
-        "Diastolic": 0.9
+        "Diastolic": 0.9,
+        "Systolic": 0.9
     }
 
     # Preparar features
@@ -175,9 +179,9 @@ def teste_risco_baixo():
         "Medical_Risk": 0.02,
         "Lifestyle_Risk": 0.08,
         "Sex_Male": 0,
-        "Heart Rate": 0.3,
         "BMI": 0.28,
-        "Diastolic": 0.2
+        "Diastolic": 0.2,
+        "Systolic": 0.2
     }
 
     # Preparar features
@@ -270,5 +274,90 @@ def debug_predict():
         print("❌ ERRO NO DEBUG:", str(e))
         return jsonify({"error": str(e)}), 500
 
+@app.route("/model-debug", methods=["GET"])
+def model_debug():
+    """Debug completo do modelo"""
+    try:
+        # Verificar features do modelo
+        if hasattr(modelo_original, 'feature_names_in_'):
+            features_reais = modelo_original.feature_names_in_.tolist()
+        else:
+            features_reais = "Não disponível - verificar joblib"
+        
+        # Verificar número de features esperadas
+        if hasattr(modelo_original, 'n_features_in_'):
+            n_features = modelo_original.n_features_in_
+        else:
+            n_features = "Não disponível"
+            
+        return jsonify({
+            "modelo_features_reais": features_reais,
+            "numero_features_esperadas": n_features,
+            "features_que_estamos_enviando": FEATURE_ORDER_7,
+            "dataset_original_features": [
+                "Alcohol Consumption", "Obesity", "Diet_Healthy", "Medication Use",
+                "Previous Heart Problems", "Sleep Hours Per Day", "Sex_Male", 
+                "Family History", "Diabetes", "Stress Level", "Systolic", 
+                "Diastolic", "Physical Activity Days Per Week", "Smoking", "BMI"
+            ]
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route("/teste-inversao", methods=["GET"])
+def teste_inversao():
+    """Testar se realmente precisa da inversão"""
+    
+    # Caso de ALTO risco (deve prever 1)
+    dados_alto = {
+        "Cardio_Risk_Score": 0.9,
+        "Medical_Risk": 0.95, 
+        "Lifestyle_Risk": 0.85,
+        "Sex_Male": 1,
+        "BMI": 0.92,
+        "Diastolic": 0.9,
+        "Systolic": 0.9
+    }
+    
+    # Caso de BAIXO risco (deve prever 0)  
+    dados_baixo = {
+        "Cardio_Risk_Score": 0.05,
+        "Medical_Risk": 0.02,
+        "Lifestyle_Risk": 0.08,
+        "Sex_Male": 0, 
+        "BMI": 0.28,
+        "Diastolic": 0.2,
+        "Systolic": 0.2
+    }
+    
+    # Testar modelo ORIGINAL
+    X_alto = np.array([prepare_features_for_model(dados_alto)])
+    X_baixo = np.array([prepare_features_for_model(dados_baixo)])
+    
+    pred_original_alto = int(modelo_original.predict(X_alto)[0])
+    pred_original_baixo = int(modelo_original.predict(X_baixo)[0])
+    
+    pred_corrigido_alto = int(modelo.predict(X_alto)[0])
+    pred_corrigido_baixo = int(modelo.predict(X_baixo)[0])
+    
+    # Converter numpy.bool_ para bool nativo do Python
+    original_correto = bool(pred_original_alto == 1 and pred_original_baixo == 0)
+    corrigido_correto = bool(pred_corrigido_alto == 1 and pred_corrigido_baixo == 0)
+    
+    return jsonify({
+        "modelo_original": {
+            "alto_risco_pred": pred_original_alto,
+            "baixo_risco_pred": pred_original_baixo,
+            "esta_correto": original_correto
+        },
+        "modelo_corrigido": {
+            "alto_risco_pred": pred_corrigido_alto, 
+            "baixo_risco_pred": pred_corrigido_baixo,
+            "esta_correto": corrigido_correto
+        },
+        "conclusao": "Modelo original ESTÁ CORRETO" if original_correto else "Modelo original ESTÁ INVERTIDO"
+    })
+    
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)

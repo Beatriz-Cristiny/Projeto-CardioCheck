@@ -91,24 +91,37 @@ function collectStepData(stepNumber) {
 }
 
 // ========================
-// Validação
+// Validação CORRIGIDA
 // ========================
 function validateStepData(data, stepNumber) {
-  const step = document.getElementById(`step-${stepNumber}`);
-  let valid = true;
+    const step = document.getElementById(`step-${stepNumber}`);
+    let valid = true;
 
-  step.querySelectorAll("[required]").forEach((input) => {
-    if (input.type === "radio") {
-      const group = input.name;
-      if (!step.querySelector(`input[name="${group}"]:checked`)) {
-        valid = false;
-      }
-    } else if (input.value.trim() === "") {
-      valid = false;
+    step.querySelectorAll("[required]").forEach((input) => {
+        if (input.type === "radio") {
+            const group = input.name;
+            if (!step.querySelector(`input[name="${group}"]:checked`)) {
+                valid = false;
+                console.warn(`❌ Campo obrigatório não preenchido: ${group}`);
+            }
+        } else if (input.type === "select-one") {
+            // ✅ CORREÇÃO PARA SELECT: valor vazio ou não selecionado
+            if (input.value === "" || input.selectedIndex === 0) {
+                valid = false;
+                console.warn(`❌ Select obrigatório não preenchido: ${input.name}`);
+            }
+        } else if (input.value.trim() === "") {
+            // ✅ CORREÇÃO: Não verificar se é "0", pois 0 é um valor válido
+            valid = false;
+            console.warn(`❌ Campo obrigatório não preenchido: ${input.name}`);
+        }
+    });
+
+    if (!valid) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
     }
-  });
 
-  return valid;
+    return valid;
 }
 
 // ========================
@@ -118,7 +131,6 @@ function handleStepSubmission(stepNumber, proceed = true) {
   if (proceed) {
     const data = collectStepData(stepNumber);
     if (!validateStepData(data, stepNumber)) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -155,14 +167,14 @@ function normalizarDadosFormulario(dados) {
     if (dados["Diastolic"] !== undefined) 
         normalizados["Diastolic"] = normalizarValor(dados["Diastolic"], 40, 120);
     
+    if (dados["Systolic"] !== undefined) 
+        normalizados["Systolic"] = normalizarValor(dados["Systolic"], 80, 180);
+    
     if (dados["Diet_Healthy"] !== undefined) 
-        normalizados["Diet_Healthy"] = normalizarValor(dados["Diet_Healthy"], 0, 10);
+        normalizados["Diet_Healthy"] = parseFloat(dados["Diet_Healthy"]); // ✅ CORRIGIDO
     
     if (dados["Family History"] !== undefined) 
         normalizados["Family History"] = parseInt(dados["Family History"]);
-    
-    if (dados["Heart Rate"] !== undefined) 
-        normalizados["Heart Rate"] = normalizarValor(dados["Heart Rate"], 40, 120);
     
     if (dados["Medication Use"] !== undefined) 
         normalizados["Medication Use"] = parseInt(dados["Medication Use"]);
@@ -192,7 +204,7 @@ function normalizarDadosFormulario(dados) {
 }
 
 // ========================
-// 🔥 CALCULAR FEATURES COMPOSTAS (NOVA FUNÇÃO)
+// 🔥 CALCULAR 7 FEATURES COMPOSTAS (INCLUINDO SYSTOLIC)
 // ========================
 function calcularFeaturesCompostas(dados) {
     console.log("📊 Dados recebidos para cálculo:", dados);
@@ -205,11 +217,10 @@ function calcularFeaturesCompostas(dados) {
     const heartProblems = parseFloat(dados["Previous Heart Problems"]) || 0;
     const familyHistory = parseFloat(dados["Family History"]) || 0;
     const medicationUse = parseFloat(dados["Medication Use"]) || 0;
-    const physicalActivity = parseFloat(dados["Physical Activity Days Per Week"]) || 0;
     const sexMale = parseFloat(dados.Sex_Male) || 0;
-    const heartRate = parseFloat(dados["Heart Rate"]) || 0;
     const bmi = parseFloat(dados.BMI) || 0;
     const diastolic = parseFloat(dados.Diastolic) || 0;
+    const systolic = parseFloat(dados.Systolic) || 0;
 
     // Cardio Risk Score
     const cardioRisk = (
@@ -229,33 +240,30 @@ function calcularFeaturesCompostas(dados) {
         medicationUse
     ) / 4;
 
-    // Converter atividade física para risco de sedentarismo
-    const sedentaryRisk = 1 - physicalActivity;
-
     // Lifestyle Risk
     const lifestyleRisk = (
         smoking +
-        alcohol +
-        obesity +
-        sedentaryRisk
-    ) / 4;
+        alcohol + 
+        obesity
+    ) / 3;
 
+    // 🔥 AGORA SÃO 7 FEATURES (INCLUINDO SYSTOLIC)
     const featuresCalculadas = {
         "Cardio_Risk_Score": cardioRisk,
         "Medical_Risk": medicalRisk,
         "Lifestyle_Risk": lifestyleRisk,
         "Sex_Male": sexMale,
-        "Heart Rate": heartRate,
         "BMI": bmi,
-        "Diastolic": diastolic
+        "Diastolic": diastolic,
+        "Systolic": systolic
     };
 
-    console.log("🎯 Features compostas calculadas:", featuresCalculadas);
+    console.log("🎯 7 Features CORRETAS para o modelo:", featuresCalculadas);
     return featuresCalculadas;
 }
 
 // ========================
-// 🔥 ENVIO FINAL MODIFICADO
+// 🔥 ENVIO FINAL CORRIGIDO
 // ========================
 async function handleFinalSubmission() {
     const data = collectStepData(totalSteps);
@@ -268,6 +276,23 @@ async function handleFinalSubmission() {
     Object.assign(formData, data);
 
     // ================================
+    // 🔥 DEBUG DETALHADO - VERIFICAR TODOS OS DADOS
+    // ================================
+    console.log("🔍 DEBUG COMPLETO - Todos os dados coletados:");
+    console.log("FormData completo:", formData);
+    console.log("Diet_Healthy (antes):", formData["Diet_Healthy"]);
+    console.log("Pressão Sistólica (Systolic):", formData["Systolic"]);
+    console.log("Pressão Diastólica (Diastolic):", formData["Diastolic"]);
+    console.log("BMI:", formData["BMI"]);
+    
+    // Verificar se Systolic está presente e tem valor válido
+    if (!formData["Systolic"] || formData["Systolic"] === 0) {
+        console.warn("⚠️  ATENÇÃO: Pressão Sistólica está vazia ou zero!");
+        alert("Por favor, preencha a pressão arterial sistólica (valor superior).");
+        return;
+    }
+
+    // ================================
     // 🔥 CONVERSÕES CORRETAS
     // ================================
     
@@ -275,16 +300,19 @@ async function handleFinalSubmission() {
     if (formData["Sex"]) {
         formData["Sex_Male"] = formData["Sex"] === "Masculino" ? 1 : 0;
         delete formData["Sex"];
+        console.log("🚻 Sex_Male convertido:", formData["Sex_Male"]);
     }
 
     // 2. Calcular Obesity baseado no BMI
     if (formData["BMI"]) {
         formData["Obesity"] = formData["BMI"] >= 30 ? 1 : 0;
+        console.log("⚖️ Obesity calculado:", formData["Obesity"]);
     }
 
-    // 3. Garantir que Diet_Healthy está como número
-    if (formData["Diet_Healthy"]) {
-        formData["Diet_Healthy"] = parseInt(formData["Diet_Healthy"]);
+    // 3. Garantir que Diet_Healthy está como número (já vem do select como 0, 1, 2)
+    if (formData["Diet_Healthy"] !== undefined) {
+        formData["Diet_Healthy"] = parseFloat(formData["Diet_Healthy"]);
+        console.log("🍎 Diet_Healthy convertido:", formData["Diet_Healthy"]);
     }
 
     // 4. Normalizar os dados
@@ -292,13 +320,12 @@ async function handleFinalSubmission() {
     
     console.log("📤 Dados normalizados:", dadosNormalizados);
 
-    // 🔥 CALCULAR AS 7 FEATURES ESPECÍFICAS DO MODELO
+    // 🔥 CALCULAR AS 7 FEATURES CORRETAS DO MODELO (COM SYSTOLIC)
     const featuresParaBackend = calcularFeaturesCompostas(dadosNormalizados);
     
-    console.log("🎯 7 Features para o modelo:", featuresParaBackend);
+    console.log("🎯 7 Features para o modelo (COM SYSTOLIC):", featuresParaBackend);
 
     try {
-        // 🔥 USAR ENDPOINT DE DEBUG
         const resp = await fetch("http://127.0.0.1:5000/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -311,7 +338,7 @@ async function handleFinalSubmission() {
         }
 
         const result = await resp.json();
-        console.log("📥 Resposta DEBUG do servidor:", result);
+        console.log("📥 Resposta do servidor:", result);
 
         // Mostrar resultados
         document.getElementById(`step-${totalSteps}`).style.display = "none";
@@ -330,13 +357,6 @@ async function handleFinalSubmission() {
                     <p>Probabilidade de risco alto: <strong>${(result.probability_high * 100).toFixed(1)}%</strong></p>
                     <p>Probabilidade de risco baixo: <strong>${(result.probability_low * 100).toFixed(1)}%</strong></p>
                 </div>
-                ${result.debug ? `
-                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0; font-size: 12px; text-align: left;">
-                    <strong>Debug Info:</strong><br>
-                    Predição Original: ${result.debug.prediction_original}<br>
-                    Predição Corrigida: ${result.debug.prediction_corrected}
-                </div>
-                ` : ''}
                 <p style="color: #666; font-size: 14px; margin-top: 20px;">
                     💡 Este resultado tem <strong>${(result.confidence * 100).toFixed(1)}%</strong> de confiança
                 </p>

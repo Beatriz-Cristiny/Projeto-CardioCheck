@@ -26,7 +26,6 @@
 
       <!-- FORM PRINCIPAL -->
       <form id="multi-step-form">
-        
         <!-- STEP 1 -->
         <section class="step active" id="step-1" data-step="1">
           <h2>1. Seu Perfil e Histórico</h2>
@@ -50,9 +49,16 @@
           </div>
 
           <div class="form-group toggle-group">
-            <label for="family-history">Histórico Familiar de Doenças Cardíacas?</label>
+            <label for="family-history"
+              >Histórico Familiar de Doenças Cardíacas?</label
+            >
             <div class="switch-container">
-              <input type="checkbox" id="family-history" name="Family History" value="1" />
+              <input
+                type="checkbox"
+                id="family-history"
+                name="Family History"
+                value="1"
+              />
               <label for="family-history" class="toggle-switch"></label>
             </div>
             <span class="switch-label">Não / Sim</span>
@@ -61,16 +67,28 @@
           <div class="form-group toggle-group">
             <label for="prev-problems">Já teve Problemas Cardíacos?</label>
             <div class="switch-container">
-              <input type="checkbox" id="prev-problems" name="Previous Heart Problems" value="1" />
+              <input
+                type="checkbox"
+                id="prev-problems"
+                name="Previous Heart Problems"
+                value="1"
+              />
               <label for="prev-problems" class="toggle-switch"></label>
             </div>
             <span class="switch-label">Não / Sim</span>
           </div>
 
           <div class="form-group toggle-group">
-            <label for="medication-use">Usa Medicação para Pressão/Colesterol?</label>
+            <label for="medication-use"
+              >Usa Medicação para Pressão/Colesterol?</label
+            >
             <div class="switch-container">
-              <input type="checkbox" id="medication-use" name="Medication Use" value="1" />
+              <input
+                type="checkbox"
+                id="medication-use"
+                name="Medication Use"
+                value="1"
+              />
               <label for="medication-use" class="toggle-switch"></label>
             </div>
             <span class="switch-label">Não / Sim</span>
@@ -86,7 +104,9 @@
           </div>
 
           <div class="button-container">
-            <button type="button" onclick="handleStepSubmission(1)">Prosseguir</button>
+            <button type="button" onclick="handleStepSubmission(1)">
+              Prosseguir
+            </button>
           </div>
         </section>
 
@@ -97,24 +117,64 @@
           <div class="form-group">
             <label for="blood-pressure-sys">Pressão Arterial (mmHg):</label>
             <div class="input-pair">
-              <input type="number" id="blood-pressure-sys" name="Systolic" placeholder="Sistólica" min="80" max="200" required />
+              <input
+                type="number"
+                id="blood-pressure-sys"
+                name="Systolic"
+                placeholder="Sistólica"
+                min="80"
+                max="200"
+                required
+              />
               /
-              <input type="number" id="blood-pressure-dia" name="Diastolic" placeholder="Diastólica" min="40" max="120" required />
+              <input
+                type="number"
+                id="blood-pressure-dia"
+                name="Diastolic"
+                placeholder="Diastólica"
+                min="40"
+                max="120"
+                required
+              />
             </div>
             <small>Ex: 120/80 mmHg</small>
           </div>
 
           <div class="form-group">
             <label for="bmi">Seu IMC (Índice de Massa Corporal):</label>
-            <input type="number" step="0.1" id="bmi" name="BMI" min="15" max="50" required />
+            <input
+              type="number"
+              step="0.1"
+              id="bmi"
+              name="BMI"
+              min="15"
+              max="50"
+              required
+            />
             <small>Ex: 24.5</small>
           </div>
 
-          <!-- ❌ REMOVIDO: HEART RATE -->
+          <!-- ✅ AGORA COM HEART RATE -->
+          <div class="form-group">
+            <label for="heart-rate">Frequência Cardíaca (bpm):</label>
+            <input
+              type="number"
+              id="heart-rate"
+              name="Heart Rate"
+              min="40"
+              max="180"
+              required
+            />
+            <small>Ex: 70 bpm</small>
+          </div>
 
           <div class="button-container">
-            <button type="button" onclick="handleStepSubmission(2, false)">Voltar</button>
-            <button type="button" onclick="handleStepSubmission(2)">Prosseguir</button>
+            <button type="button" onclick="handleStepSubmission(2, false)">
+              Voltar
+            </button>
+            <button type="button" onclick="handleStepSubmission(2)">
+              Prosseguir
+            </button>
           </div>
         </section>
 
@@ -148,13 +208,19 @@
               <option value="">Selecione...</option>
               <option value="0">Pouco Saudável (fast food, processados)</option>
               <option value="1">Moderadamente Saudável</option>
-              <option value="2">Muito Saudável (frutas, vegetais, integral)</option>
+              <option value="2">
+                Muito Saudável (frutas, vegetais, integral)
+              </option>
             </select>
           </div>
 
           <div class="button-container">
-            <button type="button" onclick="handleStepSubmission(3, false)">Voltar</button>
-            <button type="button" onclick="handleStepSubmission(3)">Prosseguir</button>
+            <button type="button" onclick="handleStepSubmission(3, false)">
+              Voltar
+            </button>
+            <button type="button" onclick="handleStepSubmission(3)">
+              Prosseguir
+            </button>
           </div>
         </section>
 
@@ -163,27 +229,60 @@
           <h2>4. Seus Hábitos Diários</h2>
 
           <div class="form-group">
-            <label for="activity-days">Dias de Atividade Física por Semana:</label>
-            <input type="number" id="activity-days" name="Physical Activity Days Per Week" min="0" max="7" required />
-            <small>Quantos dias você se exercita por pelo menos 30 minutos</small>
+            <label for="activity-days"
+              >Dias de Atividade Física por Semana:</label
+            >
+            <input
+              type="number"
+              id="activity-days"
+              name="Physical Activity Days Per Week"
+              min="0"
+              max="7"
+              required
+            />
+            <small
+              >Quantos dias você se exercita por pelo menos 30 minutos</small
+            >
           </div>
 
           <div class="form-group">
             <label for="sleep-hours">Horas de Sono Por Dia:</label>
-            <input type="number" id="sleep-hours" name="Sleep Hours Per Day" min="3" max="12" step="0.5" required />
+            <input
+              type="number"
+              id="sleep-hours"
+              name="Sleep Hours Per Day"
+              min="3"
+              max="12"
+              step="0.5"
+              required
+            />
             <small>Média de horas de sono por noite</small>
           </div>
 
           <div class="form-group">
             <label for="stress-level">Nível de Estresse (1–10):</label>
-            <input type="range" id="stress-level" name="Stress Level" min="1" max="10" step="1" oninput="stressValue.innerText = this.value" />
+            <input
+              type="range"
+              id="stress-level"
+              name="Stress Level"
+              min="1"
+              max="10"
+              step="1"
+              oninput="stressValue.innerText = this.value"
+            />
             <p>Nível atual: <span id="stressValue">5</span></p>
             <small>1 = Muito tranquilo, 10 = Muito estressado</small>
           </div>
 
           <div class="button-container">
-            <button type="button" onclick="handleStepSubmission(4, false)">Voltar</button>
-            <button type="button" class="final-submit" onclick="handleFinalSubmission()">
+            <button type="button" onclick="handleStepSubmission(4, false)">
+              Voltar
+            </button>
+            <button
+              type="button"
+              class="final-submit"
+              onclick="handleFinalSubmission()"
+            >
               Obter Meu Resultado
             </button>
           </div>

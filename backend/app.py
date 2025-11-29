@@ -14,13 +14,13 @@ FEATURE_ORDER_7 = [
     "Sex_Male",
     "BMI",           
     "Diastolic",
-    "Systolic"       
+    "Heart Rate"       
 ]
 
 # Carregar modelo
 try:
     import joblib
-    modelo_path = os.path.join(os.path.dirname(__file__), "heart_risk_predictor.pkl")
+    modelo_path = os.path.join(os.path.dirname(__file__), "modelo_cardiaco_otimizado.pkl")
     
     if os.path.exists(modelo_path):
         modelo_original = joblib.load(modelo_path)
@@ -135,7 +135,7 @@ def teste_risco_alto():
         "Sex_Male": 1,
         "BMI": 0.92,
         "Diastolic": 0.9,
-        "Systolic": 0.9
+        "Heart Rate": 0.9
     }
 
     # Preparar features
@@ -181,7 +181,7 @@ def teste_risco_baixo():
         "Sex_Male": 0,
         "BMI": 0.28,
         "Diastolic": 0.2,
-        "Systolic": 0.2
+        "Heart Rate": 0.2
     }
 
     # Preparar features
@@ -297,7 +297,7 @@ def model_debug():
             "dataset_original_features": [
                 "Alcohol Consumption", "Obesity", "Diet_Healthy", "Medication Use",
                 "Previous Heart Problems", "Sleep Hours Per Day", "Sex_Male", 
-                "Family History", "Diabetes", "Stress Level", "Systolic", 
+                "Family History", "Diabetes", "Stress Level", "Heart Rate", 
                 "Diastolic", "Physical Activity Days Per Week", "Smoking", "BMI"
             ]
         })
@@ -317,7 +317,7 @@ def teste_inversao():
         "Sex_Male": 1,
         "BMI": 0.92,
         "Diastolic": 0.9,
-        "Systolic": 0.9
+        "Heart Rate": 0.9
     }
     
     # Caso de BAIXO risco (deve prever 0)  
@@ -328,7 +328,7 @@ def teste_inversao():
         "Sex_Male": 0, 
         "BMI": 0.28,
         "Diastolic": 0.2,
-        "Systolic": 0.2
+        "Heart Rate": 0.2
     }
     
     # Testar modelo ORIGINAL
